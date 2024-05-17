@@ -41,12 +41,13 @@
         // Add a marker for the user's location
         var marker = L.marker([51.505, -0.09]).addTo(map);
 
-        // Function to get address from latitude and longitude using Nominatim
+        // Function to get address from latitude and longitude using OpenCage Geocoding
         function getAddress(lat, lon) {
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+            fetch(`https://api.opencagedata.com/geocode/v1/json?key=9e33cf3244514cc1a3a38a832fb13695&q=${lat}+${lon}&pretty=1`)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('address').textContent = data.display_name;
+                    var address = data.results[0].formatted;
+                    document.getElementById('address').textContent = address;
                 })
                 .catch(error => {
                     console.error('Error fetching address:', error);
