@@ -43,7 +43,7 @@
 
         // Function to get address from latitude and longitude using OpenCage Geocoding
         function getAddress(lat, lon) {
-            fetch(`https://api.opencagedata.com/geocode/v1/json?key=9e33cf3244514cc1a3a38a832fb13695&q=${lat}+${lon}&pretty=1`)
+            fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}%2C${lon}&key=9e33cf3244514cc1a3a38a832fb13695`)
                 .then(response => response.json())
                 .then(data => {
                     var address = data.results[0].formatted;
@@ -58,7 +58,6 @@
         function onPositionReceived(position) {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
-            var accuracy = position.coords.accuracy;
 
             var userLocation = new L.LatLng(lat, lon);
 
@@ -69,10 +68,7 @@
             // Get and display the address
             getAddress(lat, lon);
 
-            // Display accuracy
-            document.getElementById('address').textContent += ` (Accuracy: ${accuracy} meters)`;
-
-            console.log(`Latitude: ${lat}, Longitude: ${lon}, Accuracy: ${accuracy} meters`);
+            console.log(`Latitude: ${lat}, Longitude: ${lon}`);
         }
 
         // Function to handle geolocation errors
