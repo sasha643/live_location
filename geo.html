@@ -53,27 +53,38 @@
                 });
         }
 
+        // Function to handle geolocation success
+        function onPositionReceived(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            var accuracy = position.coords.accuracy;
+
+            var userLocation = new L.LatLng(lat, lon);
+
+            // Update marker position and map center
+            marker.setLatLng(userLocation);
+            map.setView(userLocation, 13);
+
+            // Get and display the address
+            getAddress(lat, lon);
+
+            // Display accuracy
+            document.getElementById('address').textContent += ` (Accuracy: ${accuracy} meters)`;
+
+            console.log(`Latitude: ${lat}, Longitude: ${lon}, Accuracy: ${accuracy} meters`);
+        }
+
+        // Function to handle geolocation errors
+        function onPositionError(error) {
+            console.error("Error occurred while retrieving location: ", error);
+        }
+
         // Use the Geolocation API to get the user's current position
         if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(function(position) {
-                var lat = position.coords.latitude;
-                var lon = position.coords.longitude;
-                var accuracy = position.coords.accuracy;
-
-                var userLocation = new L.LatLng(lat, lon);
-
-                // Update marker position and map center
-                marker.setLatLng(userLocation);
-                map.setView(userLocation, 13);
-
-                // Get and display the address
-                getAddress(lat, lon);
-
-                console.log(`Latitude: ${lat}, Longitude: ${lon}, Accuracy: ${accuracy} meters`);
-            }, function(error) {
-                console.error("Error occurred while retrieving location: ", error);
-            }, {
-                enableHighAccuracy: true
+            navigator.geolocation.watchPosition(onPositionReceived, onPositionError, {
+                enableHighAccuracy: true, // Request high accuracy
+                maximumAge: 0,            // Do not use cached location
+                timeout: 5000             // Set a timeout of 5 seconds
             });
         } else {
             console.error("Geolocation is not supported by this browser.");
